@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Vendas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .feedback {
+            color: red;
+            font-size: 14px;
+        }
+
+        /* Estilo para justificação do texto nas seções de lista */
+        .justificado {
+            text-align: justify;
+        }
+
+        /* Correção: adicionando margem nas divs de venda */
+        .venda-item {
+            margin-bottom: 20px;
+            /* Espaço entre as vendas */
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .venda-item h4 {
+            margin-top: 0;
+        }
+
+        /* Estilo para o pedido de produtos */
+        .pedido-produtos-lista {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .pedido-produtos-lista ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pedido-produtos-lista li {
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .pedido-produtos-lista button {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body onload="carregarDados()">
+    <div id="home" class="container">
+        <h2>Sistema de Vendas</h2>
+        <button onclick="showPage('cliente')">Cadastrar Cliente</button>
+        <button onclick="showPage('listaClientes')">Lista de Clientes</button>
+        <button onclick="showPage('produto')">Cadastrar Produto</button>
+        <button onclick="showPage('listaProdutos')">Lista de Produtos</button>
+        <button onclick="showPage('pedido')">Cadastrar Pedido</button>
+        <button onclick="showPage('vendas')">Vendas Realizadas</button>
+    </div>
+
+    <div id="cliente" class="container hidden">
+        <h3>Cadastrar Cliente</h3>
+        <input type="text" id="clienteId" placeholder="CPF do Cliente: 00000000000">
+        <input type="text" id="clienteNome" placeholder="Nome do Cliente">
+        <button onclick="cadastrarCliente()">Cadastrar Cliente</button>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="listaClientes" class="container hidden justificado">
+        <h3>Lista de Clientes</h3>
+        <div id="clientesLista"></div>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="produto" class="container hidden">
+        <h3>Cadastrar Produto</h3>
+        <input type="text" id="produtoId" placeholder="ID do Produto">
+        <input type="text" id="produtoNome" placeholder="Nome do Produto">
+        <input type="number" id="produtoPreco" placeholder="Preço do Produto">
+        <button onclick="cadastrarProduto()">Cadastrar Produto</button>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="listaProdutos" class="container hidden justificado">
+        <h3>Lista de Produtos</h3>
+        <div id="produtosLista"></div>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="pedido" class="container hidden">
+        <h3>Cadastrar Pedido</h3>
+        <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
+        <input type="text" id="pedidoProdutoId" placeholder="ID do Produto">
+        <input type="number" id="pedidoQuantidade" placeholder="Quantidade">
+        <button onclick="adicionarProdutoPedido()">Adicionar Produto ao Pedido</button>
+        <button onclick="finalizarPedido()">Finalizar Pedido</button>
+        <button onclick="showPage('home')">Voltar</button>
+
+        <div id="pedidoProdutosLista" class="pedido-produtos-lista">
+            <h4>Produtos no Pedido</h4>
+            <ul id="listaProdutosPedido"></ul>
+        </div>
+    </div>
+
+    <div id="vendas" class="container hidden justificado">
+        <h3>Vendas Realizadas</h3>
+        <div id="vendasLista"></div>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <script>
+        let clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+        let produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+        let pedidoAtual = { cliente: null, itens: [] };
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            if (pageId === 'listaClientes') atualizarListaClientes();
+            if (pageId === 'listaProdutos') atualizarListaProdutos();
+            if (pageId === 'vendas') atualizarVendas();
+        }
+
+        function salvarDados() {
+            localStorage.setItem('clientes', JSON.stringify(clientes));
+            localStorage.setItem('produtos', JSON.stringify(produtos));
+            localStorage.setItem('vendas', JSON.stringify(vendas));
+        }
+
+        function carregarDados() {
+            atualizarVendas();
+        }
+
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+                return false; // Verifica se o CPF é composto por números repetidos
+            }
+
+            let soma = 0;
+            let resto;
+
+            // Valida o primeiro dígito verificador
+            for (let i = 1; i <= 9; i++) {
+                soma += parseInt(cpf[i - 1]) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf[9])) {
+                return false;
+            }
+
+            soma = 0;
+            // Valida o segundo dígito verificador
+            for (let i = 1; i <= 10; i++) {
+                soma += parseInt(cpf[i - 1]) * (12 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf[10])) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function cadastrarCliente() {
+            let id = document.getElementById('clienteId').value;
+            let nome = document.getElementById('clienteNome').value;
+
+            if (!id || !nome) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            if (!validarCPF(id)) {
+                alert('CPF inválido!');
+                return;
+            }
+
+            if (clientes.some(cliente => cliente.id === id)) {
+                alert('Este CPF já está cadastrado!');
+                return;
+            }
+
+            clientes.push({ id, nome });
+            salvarDados();
+            alert('Cliente cadastrado!');
+            document.getElementById('clienteId').value = '';
+            document.getElementById('clienteNome').value = '';
+        }
+
+        function cadastrarProduto() {
+            let id = document.getElementById('produtoId').value;
+            let nome = document.getElementById('produtoNome').value;
+            let preco = document.getElementById('produtoPreco').value;
+
+            if (!id || !nome || !preco) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            if (id.length !== 9 || !/^\d{9}$/.test(id)) {
+                alert('O ID do produto deve ter exatamente 9 dígitos!');
+                return;
+            }
+
+            if (produtos.some(produto => produto.id === id)) {
+                alert('Este ID de produto já está cadastrado!');
+                return;
+            }
+
+            produtos.push({ id, nome, preco });
+            salvarDados();
+            alert('Produto cadastrado com sucesso!');
+            document.getElementById('produtoId').value = '';
+            document.getElementById('produtoNome').value = '';
+            document.getElementById('produtoPreco').value = '';
+        }
+
+        function atualizarListaClientes() {
+            let clientesDiv = document.getElementById('clientesLista');
+            clientesDiv.innerHTML = '';
+            clientes.forEach(cliente => {
+                clientesDiv.innerHTML += `<p>CPF: ${cliente.id}, Nome: ${cliente.nome}</p>`;
+            });
+        }
+
+        function atualizarListaProdutos() {
+            let produtosDiv = document.getElementById('produtosLista');
+            produtosDiv.innerHTML = '';
+            produtos.forEach(produto => {
+                produtosDiv.innerHTML += `<p>ID: ${produto.id}, Nome: ${produto.nome}, Preço: R$ ${produto.preco}</p>`;
+            });
+        }
+
+        function atualizarVendas() {
+            let vendasDiv = document.getElementById('vendasLista');
+            vendasDiv.innerHTML = ''; // Limpa a lista de vendas antes de atualizar.
+
+            if (vendas.length === 0) {
+                vendasDiv.innerHTML = '<p>Nenhuma venda realizada.</p>';
+            } else {
+                vendas.forEach(venda => {
+                    let vendaInfo = `<div class="venda-item">`; // Agora utilizando a classe para a venda
+                    vendaInfo += `<h4>Venda realizada em: ${venda.data}</h4>`;
+                    vendaInfo += `<p>Cliente: ${venda.cliente.nome} (CPF: ${venda.cliente.id})</p>`;
+                    vendaInfo += '<ul>';
+
+                    let totalCompra = 0;
+                    venda.itens.forEach(item => {
+                        let precoItem = item.produto.preco * item.quantidade;
+                        totalCompra += precoItem;
+                        vendaInfo += `<li>Produto: ${item.produto.nome}, Quantidade: ${item.quantidade}, Preço Unitário: R$ ${item.produto.preco}, Total: R$ ${precoItem.toFixed(2)}</li>`;
+                    });
+
+                    vendaInfo += `</ul><h4>Valor Total da Compra: R$ ${totalCompra.toFixed(2)}</h4>`;
+                    vendaInfo += `</div>`; // Fecha o div da venda
+                    vendasDiv.innerHTML += vendaInfo;
+                });
+            }
+        }
+
+        function adicionarProdutoPedido() {
+            let clienteId = document.getElementById('pedidoClienteId').value;
+            let produtoId = document.getElementById('pedidoProdutoId').value;
+            let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
+
+            if (!clienteId || !produtoId || !quantidade) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            if (!clienteId || !produtoId || !quantidade || quantidade <= 0) {
+                alert('A quantidade deve ser um número positivo!');
+                return;
+            }
+
+            let cliente = clientes.find(c => c.id === clienteId);
+            if (!cliente) {
+                alert('Cliente não encontrado!');
+                return;
+            }
+
+            let produto = produtos.find(p => p.id === produtoId);
+            if (!produto) {
+                alert('Produto não encontrado!');
+                return;
+            }
+
+            // Verifica se o cliente já está no pedido atual
+            if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
+                let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);
+                if (continuar) {
+                    pedidoAtual = { cliente, itens: [] }; // Reinicia o pedido
+                } else {
+                    return;
+                }
+            }
+
+            if (!pedidoAtual.cliente) {
+                pedidoAtual.cliente = cliente; // Adiciona o cliente ao pedido
+            }
+
+            let itemExistente = pedidoAtual.itens.find(item => item.produto.id === produtoId);
+            if (itemExistente) {
+                itemExistente.quantidade += quantidade; // Se o produto já estiver no pedido, apenas aumenta a quantidade
+            } else {
+                pedidoAtual.itens.push({ produto, quantidade });
+            }
+
+            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+        }
+
+        function removerProdutoPedido(produtoId) {
+            pedidoAtual.itens = pedidoAtual.itens.filter(item => item.produto.id !== produtoId);
+            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+        }
+
+        function atualizarProdutosPedido() {
+            let listaProdutosPedido = document.getElementById('listaProdutosPedido');
+            listaProdutosPedido.innerHTML = '';
+
+            pedidoAtual.itens.forEach(item => {
+                listaProdutosPedido.innerHTML += `<li>${item.produto.nome} - Quantidade: ${item.quantidade} - Preço Unitário: R$ ${item.produto.preco} - Total: R$ ${(item.produto.preco * item.quantidade).toFixed(2)} <button onclick="removerProdutoPedido('${item.produto.id}')">Remover</button></li>`;
+            });
+        }
+
+        function finalizarPedido() {
+            if (!pedidoAtual.cliente) {
+                alert('Selecione um cliente antes de finalizar o pedido.');
+                return;
+            }
+
+            vendas.push({
+                data: new Date().toLocaleString(),
+                cliente: pedidoAtual.cliente,
+                itens: pedidoAtual.itens
+            });
+            salvarDados();
+            alert('Pedido finalizado e registrado!');
+            pedidoAtual = { cliente: null, itens: [] }; // Reinicia o pedido
+            atualizarProdutosPedido(); // Limpa a lista de produtos do pedido
+        }
+    </script>
+</body>
+
+</html>
