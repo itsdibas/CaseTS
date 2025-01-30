@@ -6,96 +6,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Vendas</title>
     <style>
+        /* Estilo geral */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            color: #333;
             text-align: center;
         }
 
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        h2, h3 {
+            font-weight: 600;
+            color: #333;
         }
 
+        /* Container principal */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilo dos botões */
         button {
-            display: block;
             width: 100%;
+            padding: 14px;
             margin-top: 10px;
+            border: none;
             background-color: #28a745;
             color: white;
-            border: none;
-            padding: 10px;
+            font-size: 16px;
             cursor: pointer;
-            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #218838;
         }
 
-        .hidden {
-            display: none;
-        }
-
+        /* Campos de entrada */
         input {
             width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
 
+        /* Estilo das imagens de fundo */
+        .header-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Estilo de feedback */
         .feedback {
-            color: red;
+            color: #dc3545;
             font-size: 14px;
         }
 
-        /* Estilo para justificação do texto nas seções de lista */
+        /* Lista de clientes e produtos */
+        .list-container {
+            margin-top: 20px;
+        }
+
+        .venda-item {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pedido-produtos-lista ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .pedido-produtos-lista li {
+            padding: 12px;
+            background-color: #e9ecef;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pedido-produtos-lista li button {
+            background-color: #dc3545;
+            border-radius: 50%;
+            padding: 5px 10px;
+            color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .pedido-produtos-lista li button:hover {
+            background-color: #c82333;
+        }
+
         .justificado {
             text-align: justify;
         }
 
-        /* Correção: adicionando margem nas divs de venda */
-        .venda-item {
+        /* Estilos para tornar a página mais limpa */
+        .hidden {
+            display: none;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+
+        /* Títulos e subtítulos */
+        h2 {
+            font-size: 2rem;
             margin-bottom: 20px;
-            /* Espaço entre as vendas */
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* Estilo do menu */
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu button {
+            background: linear-gradient(to right, #28a745, #218838);
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
             padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .venda-item h4 {
-            margin-top: 0;
+        .menu button:hover {
+            background-color: #1e7e34;
         }
 
-        /* Estilo para o pedido de produtos */
-        .pedido-produtos-lista {
+        /* Estilo para mensagens */
+        .message {
             margin-top: 20px;
-            text-align: left;
-        }
-
-        .pedido-produtos-lista ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .pedido-produtos-lista li {
             padding: 10px;
-            background-color: #f1f1f1;
-            margin-bottom: 10px;
             border-radius: 5px;
+            display: none;
         }
 
-        .pedido-produtos-lista button {
-            background-color: #dc3545;
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
@@ -103,28 +188,36 @@
 <body onload="carregarDados()">
     <div id="home" class="container">
         <h2>Sistema de Vendas</h2>
-        <button onclick="showPage('cliente')">Cadastrar Cliente</button>
-        <button onclick="showPage('listaClientes')">Lista de Clientes</button>
-        <button onclick="showPage('produto')">Cadastrar Produto</button>
-        <button onclick="showPage('listaProdutos')">Lista de Produtos</button>
-        <button onclick="showPage('pedido')">Cadastrar Pedido</button>
-        <button onclick="showPage('vendas')">Vendas Realizadas</button>
+        <div class="menu">
+            <button onclick="showPage('cliente')">Cadastrar Cliente</button>
+            <button onclick="showPage('listaClientes')">Lista de Clientes</button>
+            <button onclick="showPage('produto')">Cadastrar Produto</button>
+            <button onclick="showPage('listaProdutos')">Lista de Produtos</button>
+            <button onclick="showPage('pedido')">Cadastrar Pedido</button>
+            <button onclick="showPage('vendas')">Vendas Realizadas</button>
+        </div>
     </div>
 
+    <!-- Elemento para exibir mensagens -->
+    <div id="message" class="message"></div>
+
+    <!-- Formulário de cadastro de cliente -->
     <div id="cliente" class="container hidden">
         <h3>Cadastrar Cliente</h3>
-        <input type="text" id="clienteId" placeholder="CPF do Cliente: 00000000000">
+        <input type="text" id="clienteId" placeholder="CPF do Cliente">
         <input type="text" id="clienteNome" placeholder="Nome do Cliente">
         <button onclick="cadastrarCliente()">Cadastrar Cliente</button>
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
+    <!-- Lista de clientes -->
     <div id="listaClientes" class="container hidden justificado">
         <h3>Lista de Clientes</h3>
         <div id="clientesLista"></div>
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
+    <!-- Formulário de cadastro de produto -->
     <div id="produto" class="container hidden">
         <h3>Cadastrar Produto</h3>
         <input type="text" id="produtoId" placeholder="ID do Produto">
@@ -134,12 +227,14 @@
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
+    <!-- Lista de produtos -->
     <div id="listaProdutos" class="container hidden justificado">
         <h3>Lista de Produtos</h3>
         <div id="produtosLista"></div>
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
+    <!-- Formulário de cadastro de pedido -->
     <div id="pedido" class="container hidden">
         <h3>Cadastrar Pedido</h3>
         <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
@@ -155,6 +250,7 @@
         </div>
     </div>
 
+    <!-- Vendas realizadas -->
     <div id="vendas" class="container hidden justificado">
         <h3>Vendas Realizadas</h3>
         <div id="vendasLista"></div>
@@ -187,38 +283,14 @@
             atualizarVendas();
         }
 
-        function validarCPF(cpf) {
-            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
-
-            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-                return false; // Verifica se o CPF é composto por números repetidos
-            }
-
-            let soma = 0;
-            let resto;
-
-            // Valida o primeiro dígito verificador
-            for (let i = 1; i <= 9; i++) {
-                soma += parseInt(cpf[i - 1]) * (11 - i);
-            }
-            resto = (soma * 10) % 11;
-            if (resto === 10 || resto === 11) resto = 0;
-            if (resto !== parseInt(cpf[9])) {
-                return false;
-            }
-
-            soma = 0;
-            // Valida o segundo dígito verificador
-            for (let i = 1; i <= 10; i++) {
-                soma += parseInt(cpf[i - 1]) * (12 - i);
-            }
-            resto = (soma * 10) % 11;
-            if (resto === 10 || resto === 11) resto = 0;
-            if (resto !== parseInt(cpf[10])) {
-                return false;
-            }
-
-            return true;
+        function exibirMensagem(mensagem, tipo) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = mensagem;
+            messageDiv.className = `message ${tipo}`;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
         }
 
         function cadastrarCliente() {
@@ -226,23 +298,18 @@
             let nome = document.getElementById('clienteNome').value;
 
             if (!id || !nome) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-
-            if (!validarCPF(id)) {
-                alert('CPF inválido!');
+                exibirMensagem('Preencha todos os campos!', 'error');
                 return;
             }
 
             if (clientes.some(cliente => cliente.id === id)) {
-                alert('Este CPF já está cadastrado!');
+                exibirMensagem('Este CPF já está cadastrado!', 'error');
                 return;
             }
 
             clientes.push({ id, nome });
             salvarDados();
-            alert('Cliente cadastrado!');
+            exibirMensagem('Cliente cadastrado!', 'success');
             document.getElementById('clienteId').value = '';
             document.getElementById('clienteNome').value = '';
         }
@@ -253,23 +320,23 @@
             let preco = document.getElementById('produtoPreco').value;
 
             if (!id || !nome || !preco) {
-                alert('Preencha todos os campos!');
+                exibirMensagem('Preencha todos os campos!', 'error');
                 return;
             }
 
             if (id.length !== 9 || !/^\d{9}$/.test(id)) {
-                alert('O ID do produto deve ter exatamente 9 dígitos!');
+                exibirMensagem('O ID do produto deve ter exatamente 9 dígitos!', 'error');
                 return;
             }
 
             if (produtos.some(produto => produto.id === id)) {
-                alert('Este ID de produto já está cadastrado!');
+                exibirMensagem('Este ID de produto já está cadastrado!', 'error');
                 return;
             }
 
             produtos.push({ id, nome, preco });
             salvarDados();
-            alert('Produto cadastrado com sucesso!');
+            exibirMensagem('Produto cadastrado com sucesso!', 'success');
             document.getElementById('produtoId').value = '';
             document.getElementById('produtoNome').value = '';
             document.getElementById('produtoPreco').value = '';
@@ -293,13 +360,13 @@
 
         function atualizarVendas() {
             let vendasDiv = document.getElementById('vendasLista');
-            vendasDiv.innerHTML = ''; // Limpa a lista de vendas antes de atualizar.
+            vendasDiv.innerHTML = '';
 
             if (vendas.length === 0) {
                 vendasDiv.innerHTML = '<p>Nenhuma venda realizada.</p>';
             } else {
                 vendas.forEach(venda => {
-                    let vendaInfo = `<div class="venda-item">`; // Agora utilizando a classe para a venda
+                    let vendaInfo = `<div class="venda-item">`;
                     vendaInfo += `<h4>Venda realizada em: ${venda.data}</h4>`;
                     vendaInfo += `<p>Cliente: ${venda.cliente.nome} (CPF: ${venda.cliente.id})</p>`;
                     vendaInfo += '<ul>';
@@ -312,93 +379,93 @@
                     });
 
                     vendaInfo += `</ul><h4>Valor Total da Compra: R$ ${totalCompra.toFixed(2)}</h4>`;
-                    vendaInfo += `</div>`; // Fecha o div da venda
+                    vendaInfo += `</div>`;
                     vendasDiv.innerHTML += vendaInfo;
                 });
             }
         }
 
         function adicionarProdutoPedido() {
-            let clienteId = document.getElementById('pedidoClienteId').value;
-            let produtoId = document.getElementById('pedidoProdutoId').value;
-            let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
+    let clienteId = document.getElementById('pedidoClienteId').value;
+    let produtoId = document.getElementById('pedidoProdutoId').value;
+    let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
 
-            if (!clienteId || !produtoId || !quantidade) {
-                alert('Preencha todos os campos!');
-                return;
-            }
+    if (!clienteId || !produtoId || !quantidade) {
+        exibirMensagem('Preencha todos os campos!', 'error');
+        return;
+    }
 
-            if (!clienteId || !produtoId || !quantidade || quantidade <= 0) {
-                alert('A quantidade deve ser um número positivo!');
-                return;
-            }
+    if (!clienteId || !produtoId || !quantidade || quantidade <= 0) {
+        exibirMensagem('A quantidade deve ser um número positivo!', 'error');
+        return;
+    }
 
-            let cliente = clientes.find(c => c.id === clienteId);
-            if (!cliente) {
-                alert('Cliente não encontrado!');
-                return;
-            }
+    let cliente = clientes.find(c => c.id === clienteId);
+    if (!cliente) {
+        exibirMensagem('Cliente não encontrado', 'error');
+        return;
+    }
 
-            let produto = produtos.find(p => p.id === produtoId);
-            if (!produto) {
-                alert('Produto não encontrado!');
-                return;
-            }
+    let produto = produtos.find(p => p.id === produtoId);
+    if (!produto) {
+        exibirMensagem('Produto não encontrado', 'error');
+        return;
+    }
 
-            // Verifica se o cliente já está no pedido atual
-            if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
-                let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);
-                if (continuar) {
-                    pedidoAtual = { cliente, itens: [] }; // Reinicia o pedido
-                } else {
-                    return;
-                }
-            }
-
-            if (!pedidoAtual.cliente) {
-                pedidoAtual.cliente = cliente; // Adiciona o cliente ao pedido
-            }
-
-            let itemExistente = pedidoAtual.itens.find(item => item.produto.id === produtoId);
-            if (itemExistente) {
-                itemExistente.quantidade += quantidade; // Se o produto já estiver no pedido, apenas aumenta a quantidade
-            } else {
-                pedidoAtual.itens.push({ produto, quantidade });
-            }
-
-            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+    // Verifica se o cliente já está no pedido atual
+    if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
+        let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);
+        if (continuar) {
+            pedidoAtual = { cliente, itens: [] }; // Reinicia o pedido
+        } else {
+            return;
         }
+    }
 
-        function removerProdutoPedido(produtoId) {
-            pedidoAtual.itens = pedidoAtual.itens.filter(item => item.produto.id !== produtoId);
-            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
-        }
+    if (!pedidoAtual.cliente) {
+        pedidoAtual.cliente = cliente; // Adiciona o cliente ao pedido
+    }
 
-        function atualizarProdutosPedido() {
-            let listaProdutosPedido = document.getElementById('listaProdutosPedido');
-            listaProdutosPedido.innerHTML = '';
+    let itemExistente = pedidoAtual.itens.find(item => item.produto.id === produtoId);
+    if (itemExistente) {
+        itemExistente.quantidade += quantidade; // Se o produto já estiver no pedido, apenas aumenta a quantidade
+    } else {
+        pedidoAtual.itens.push({ produto, quantidade });
+    }
 
-            pedidoAtual.itens.forEach(item => {
-                listaProdutosPedido.innerHTML += `<li>${item.produto.nome} - Quantidade: ${item.quantidade} - Preço Unitário: R$ ${item.produto.preco} - Total: R$ ${(item.produto.preco * item.quantidade).toFixed(2)} <button onclick="removerProdutoPedido('${item.produto.id}')">Remover</button></li>`;
-            });
-        }
+    atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+}
 
-        function finalizarPedido() {
-            if (!pedidoAtual.cliente) {
-                alert('Selecione um cliente antes de finalizar o pedido.');
-                return;
-            }
+function removerProdutoPedido(produtoId) {
+    pedidoAtual.itens = pedidoAtual.itens.filter(item => item.produto.id !== produtoId);
+    atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+}
 
-            vendas.push({
-                data: new Date().toLocaleString(),
-                cliente: pedidoAtual.cliente,
-                itens: pedidoAtual.itens
-            });
-            salvarDados();
-            alert('Pedido finalizado e registrado!');
-            pedidoAtual = { cliente: null, itens: [] }; // Reinicia o pedido
-            atualizarProdutosPedido(); // Limpa a lista de produtos do pedido
-        }
+function atualizarProdutosPedido() {
+    let listaProdutosPedido = document.getElementById('listaProdutosPedido');
+    listaProdutosPedido.innerHTML = '';
+
+    pedidoAtual.itens.forEach(item => {
+        listaProdutosPedido.innerHTML += `<li>${item.produto.nome} - Quantidade: ${item.quantidade} - Preço Unitário: R$ ${item.produto.preco} - Total: R$ ${(item.produto.preco * item.quantidade).toFixed(2)} <button onclick="removerProdutoPedido('${item.produto.id}')">Remover</button></li>`;
+    });
+}
+
+function finalizarPedido() {
+    if (!pedidoAtual.cliente) {
+        exibirMensagem('Selecione um cliente antes de finalizar o pedido.', 'error');
+        return;
+    }
+
+    vendas.push({
+        data: new Date().toLocaleString(),
+        cliente: pedidoAtual.cliente,
+        itens: pedidoAtual.itens
+    });
+    salvarDados();
+    exibirMensagem('Pedido finalizado e registrado!', 'success');
+    pedidoAtual = { cliente: null, itens: [] }; // Reinicia o pedido
+    atualizarProdutosPedido(); // Limpa a lista de produtos do pedido
+}
     </script>
 </body>
 
