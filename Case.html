@@ -511,6 +511,11 @@
                 return;
             }
 
+            if (pedidoAtual.itens.length === 0) {
+                exibirMensagem('Adicione pelo menos um item ao pedido antes de finalizar.', 'error');
+                return;
+            }
+
             vendas.push({
                 data: new Date().toLocaleString(),
                 cliente: pedidoAtual.cliente,
