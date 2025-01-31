@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Vendas</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body onload="carregarDados()">
+    <div id="home" class="container">
+        <h2>Sistema de Vendas</h2>
+        <div class="menu">
+            <button onclick="showPage('cliente')">Cadastrar Cliente</button>
+            <button onclick="showPage('listaClientes')">Lista de Clientes</button>
+            <button onclick="showPage('produto')">Cadastrar Produto</button>
+            <button onclick="showPage('listaProdutos')">Lista de Produtos</button>
+            <button onclick="showPage('pedido')">Cadastrar Pedido</button>
+            <button onclick="showPage('vendas')">Vendas Realizadas</button>
+        </div>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div id="cliente" class="container hidden">
+        <h3>Cadastrar Cliente</h3>
+        <input type="text" id="clienteId" placeholder="CPF do Cliente">
+        <input type="text" id="clienteNome" placeholder="Nome do Cliente">
+        <button onclick="cadastrarCliente()">Cadastrar Cliente</button>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="listaClientes" class="container hidden justificado">
+        <h3>Lista de Clientes</h3>
+        <div id="clientesLista"></div>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="produto" class="container hidden">
+        <h3>Cadastrar Produto</h3>
+        <input type="text" id="produtoId" placeholder="ID do Produto">
+        <input type="text" id="produtoNome" placeholder="Nome do Produto">
+        <input type="number" id="produtoPreco" placeholder="Preço do Produto">
+        <button onclick="cadastrarProduto()">Cadastrar Produto</button>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="listaProdutos" class="container hidden justificado">
+        <h3>Lista de Produtos</h3>
+        <div id="produtosLista"></div>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <div id="pedido" class="container hidden">
+        <h3>Cadastrar Pedido</h3>
+        <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
+        <input type="text" id="pedidoProdutoId" placeholder="ID do Produto">
+        <input type="number" id="pedidoQuantidade" placeholder="Quantidade">
+        <button onclick="adicionarProdutoPedido()">Adicionar Produto ao Pedido</button>
+        <button onclick="finalizarPedido()">Finalizar Pedido</button>
+        <button onclick="showPage('home')">Voltar</button>
+
+        <div id="pedidoProdutosLista" class="pedido-produtos-lista">
+            <h4>Produtos no Pedido</h4>
+            <ul id="listaProdutosPedido"></ul>
+        </div>
+    </div>
+
+    <div id="vendas" class="container hidden justificado">
+        <h3>Vendas Realizadas</h3>
+        <div id="vendasLista"></div>
+        <button onclick="showPage('home')">Voltar</button>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
