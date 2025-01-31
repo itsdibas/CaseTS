@@ -16,7 +16,8 @@
             text-align: center;
         }
 
-        h2, h3 {
+        h2,
+        h3 {
             font-weight: 600;
             color: #333;
         }
@@ -386,86 +387,99 @@
         }
 
         function adicionarProdutoPedido() {
-    let clienteId = document.getElementById('pedidoClienteId').value;
-    let produtoId = document.getElementById('pedidoProdutoId').value;
-    let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
+            let clienteId = document.getElementById('pedidoClienteId').value;
+            let produtoId = document.getElementById('pedidoProdutoId').value;
+            let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
 
-    if (!clienteId || !produtoId || !quantidade) {
-        exibirMensagem('Preencha todos os campos!', 'error');
-        return;
-    }
+            if (!clienteId || !produtoId || !quantidade) {
+                exibirMensagem('Preencha todos os campos!', 'error');
+                return;
+            }
 
-    if (!clienteId || !produtoId || !quantidade || quantidade <= 0) {
-        exibirMensagem('A quantidade deve ser um número positivo!', 'error');
-        return;
-    }
+            if (!clienteId || !produtoId || !quantidade || quantidade <= 0) {
+                exibirMensagem('A quantidade deve ser um número positivo!', 'error');
+                return;
+            }
 
-    let cliente = clientes.find(c => c.id === clienteId);
-    if (!cliente) {
-        exibirMensagem('Cliente não encontrado', 'error');
-        return;
-    }
+            let cliente = clientes.find(c => c.id === clienteId);
+            if (!cliente) {
+                exibirMensagem('Cliente não encontrado', 'error');
+                return;
+            }
 
-    let produto = produtos.find(p => p.id === produtoId);
-    if (!produto) {
-        exibirMensagem('Produto não encontrado', 'error');
-        return;
-    }
+            let produto = produtos.find(p => p.id === produtoId);
+            if (!produto) {
+                exibirMensagem('Produto não encontrado', 'error');
+                return;
+            }
 
-    // Verifica se o cliente já está no pedido atual
-    if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
-        let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);
-        if (continuar) {
-            pedidoAtual = { cliente, itens: [] }; // Reinicia o pedido
-        } else {
-            return;
+            // Verifica se o cliente já está no pedido atual
+            if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
+                let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);
+                if (continuar) {
+                    pedidoAtual = { cliente, itens: [] }; // Reinicia o pedido
+                } else {
+                    return;
+                }
+            }
+
+            if (!pedidoAtual.cliente) {
+                pedidoAtual.cliente = cliente; // Adiciona o cliente ao pedido
+            }
+
+            let itemExistente = pedidoAtual.itens.find(item => item.produto.id === produtoId);
+            if (itemExistente) {
+                itemExistente.quantidade += quantidade; // Se o produto já estiver no pedido, apenas aumenta a quantidade
+            } else {
+                pedidoAtual.itens.push({ produto, quantidade });
+            }
+
+            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
         }
-    }
 
-    if (!pedidoAtual.cliente) {
-        pedidoAtual.cliente = cliente; // Adiciona o cliente ao pedido
-    }
+        function removerProdutoPedido(produtoId) {
+            pedidoAtual.itens = pedidoAtual.itens.filter(item => item.produto.id !== produtoId);
+            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+        }
 
-    let itemExistente = pedidoAtual.itens.find(item => item.produto.id === produtoId);
-    if (itemExistente) {
-        itemExistente.quantidade += quantidade; // Se o produto já estiver no pedido, apenas aumenta a quantidade
-    } else {
-        pedidoAtual.itens.push({ produto, quantidade });
-    }
+        function atualizarProdutosPedido() {
+            let listaProdutosPedido = document.getElementById('listaProdutosPedido');
+            listaProdutosPedido.innerHTML = '';
 
-    atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
-}
+            let totalCompra = 0;
 
-function removerProdutoPedido(produtoId) {
-    pedidoAtual.itens = pedidoAtual.itens.filter(item => item.produto.id !== produtoId);
-    atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
-}
+            pedidoAtual.itens.forEach(item => {
+                let totalItem = item.produto.preco * item.quantidade;
+                totalCompra += totalItem;
+                listaProdutosPedido.innerHTML += `<li>${item.produto.nome} - Quantidade: ${item.quantidade} - Preço Unitário: R$ ${item.produto.preco} - Total: R$ ${totalItem.toFixed(2)} <button onclick="removerProdutoPedido('${item.produto.id}')">Remover</button></li>`;
+            });
 
-function atualizarProdutosPedido() {
-    let listaProdutosPedido = document.getElementById('listaProdutosPedido');
-    listaProdutosPedido.innerHTML = '';
+            // Exibe o valor total da compra
+            let valorTotalElement = document.getElementById('valorTotalCompra');
+            if (!valorTotalElement) {
+                valorTotalElement = document.createElement('div');
+                valorTotalElement.id = 'valorTotalCompra';
+                document.body.appendChild(valorTotalElement); // Adiciona o elemento ao corpo da página
+            }
+            valorTotalElement.innerHTML = `Valor Total da Compra: R$ ${totalCompra.toFixed(2)}`;
+        }
 
-    pedidoAtual.itens.forEach(item => {
-        listaProdutosPedido.innerHTML += `<li>${item.produto.nome} - Quantidade: ${item.quantidade} - Preço Unitário: R$ ${item.produto.preco} - Total: R$ ${(item.produto.preco * item.quantidade).toFixed(2)} <button onclick="removerProdutoPedido('${item.produto.id}')">Remover</button></li>`;
-    });
-}
+        function finalizarPedido() {
+            if (!pedidoAtual.cliente) {
+                exibirMensagem('Selecione um cliente antes de finalizar o pedido.', 'error');
+                return;
+            }
 
-function finalizarPedido() {
-    if (!pedidoAtual.cliente) {
-        exibirMensagem('Selecione um cliente antes de finalizar o pedido.', 'error');
-        return;
-    }
-
-    vendas.push({
-        data: new Date().toLocaleString(),
-        cliente: pedidoAtual.cliente,
-        itens: pedidoAtual.itens
-    });
-    salvarDados();
-    exibirMensagem('Pedido finalizado e registrado!', 'success');
-    pedidoAtual = { cliente: null, itens: [] }; // Reinicia o pedido
-    atualizarProdutosPedido(); // Limpa a lista de produtos do pedido
-}
+            vendas.push({
+                data: new Date().toLocaleString(),
+                cliente: pedidoAtual.cliente,
+                itens: pedidoAtual.itens
+            });
+            salvarDados();
+            exibirMensagem('Pedido finalizado e registrado!', 'success');
+            pedidoAtual = { cliente: null, itens: [] }; // Reinicia o pedido
+            atualizarProdutosPedido(); // Limpa a lista de produtos do pedido
+        }
     </script>
 </body>
 
