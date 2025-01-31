@@ -135,40 +135,17 @@
             color: #6c757d;
         }
 
-        .remover-btn {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-left: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .remover-btn:hover {
-            background-color: darkred;
-        }
-
         .valor-total-compra {
             font-size: 1.8em;
-            /* Aumenta um pouco o tamanho da fonte para melhor destaque */
             font-weight: bold;
             color: #2C3E50;
-            /* Azul mais sóbrio para melhor contraste e estética */
             background-color: #F4F6F7;
-            /* Fundo suave para destacar o valor */
             padding: 10px 15px;
-            /* Adiciona espaçamento interno para melhor visualização */
             border-radius: 8px;
-            /* Borda arredondada para um design mais moderno */
             display: inline-block;
-            /* Evita ocupar toda a largura da tela */
             margin-top: 20px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            /* Sombra suave para efeito 3D */
         }
-
 
 
         h2 {
@@ -181,7 +158,6 @@
             margin-bottom: 15px;
         }
 
-        /* Estilo do menu */
         .menu {
             display: flex;
             flex-direction: column;
@@ -200,7 +176,6 @@
             background-color: #1e7e34;
         }
 
-        /* Estilo para mensagens */
         .message {
             margin-top: 20px;
             padding: 10px;
@@ -233,10 +208,8 @@
         </div>
     </div>
 
-    <!-- Elemento para exibir mensagens -->
     <div id="message" class="message"></div>
 
-    <!-- Formulário de cadastro de cliente -->
     <div id="cliente" class="container hidden">
         <h3>Cadastrar Cliente</h3>
         <input type="text" id="clienteId" placeholder="CPF do Cliente">
@@ -245,14 +218,12 @@
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
-    <!-- Lista de clientes -->
     <div id="listaClientes" class="container hidden justificado">
         <h3>Lista de Clientes</h3>
         <div id="clientesLista"></div>
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
-    <!-- Formulário de cadastro de produto -->
     <div id="produto" class="container hidden">
         <h3>Cadastrar Produto</h3>
         <input type="text" id="produtoId" placeholder="ID do Produto">
@@ -262,14 +233,12 @@
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
-    <!-- Lista de produtos -->
     <div id="listaProdutos" class="container hidden justificado">
         <h3>Lista de Produtos</h3>
         <div id="produtosLista"></div>
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
-    <!-- Formulário de cadastro de pedido -->
     <div id="pedido" class="container hidden">
         <h3>Cadastrar Pedido</h3>
         <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
@@ -285,7 +254,6 @@
         </div>
     </div>
 
-    <!-- Vendas realizadas -->
     <div id="vendas" class="container hidden justificado">
         <h3>Vendas Realizadas</h3>
         <div id="vendasLista"></div>
@@ -332,13 +300,13 @@
         }
 
         function validarCPF(cpf) {
-            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+            cpf = cpf.replace(/[^\d]+/g, '');
             if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
-                return false; // Verifica se o CPF é composto por números repetidos
+                return false;
             }
             let soma = 0;
             let resto;
-            // Valida o primeiro dígito verificador
+
             for (let i = 1; i <= 9; i++) {
                 soma += parseInt(cpf[i - 1]) * (11 - i);
             }
@@ -348,7 +316,7 @@
                 return false;
             }
             soma = 0;
-            // Valida o segundo dígito verificador
+
             for (let i = 1; i <= 10; i++) {
                 soma += parseInt(cpf[i - 1]) * (12 - i);
             }
@@ -493,33 +461,32 @@
                 return;
             }
 
-            // Verifica se o cliente já está no pedido atual
             if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
                 let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);
                 if (continuar) {
-                    pedidoAtual = { cliente, itens: [] }; // Reinicia o pedido
+                    pedidoAtual = { cliente, itens: [] }; 
                 } else {
                     return;
                 }
             }
 
             if (!pedidoAtual.cliente) {
-                pedidoAtual.cliente = cliente; // Adiciona o cliente ao pedido
+                pedidoAtual.cliente = cliente; 
             }
 
             let itemExistente = pedidoAtual.itens.find(item => item.produto.id === produtoId);
             if (itemExistente) {
-                itemExistente.quantidade += quantidade; // Se o produto já estiver no pedido, apenas aumenta a quantidade
+                itemExistente.quantidade += quantidade; 
             } else {
                 pedidoAtual.itens.push({ produto, quantidade });
             }
 
-            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+            atualizarProdutosPedido(); 
         }
 
         function removerProdutoPedido(produtoId) {
             pedidoAtual.itens = pedidoAtual.itens.filter(item => item.produto.id !== produtoId);
-            atualizarProdutosPedido(); // Atualiza a lista de produtos do pedido
+            atualizarProdutosPedido();
         }
 
         function atualizarProdutosPedido() {
@@ -554,13 +521,12 @@
     </li>`;
             });
 
-            // Exibe o valor total da compra
             let valorTotalElement = document.getElementById('valorTotalCompra');
             if (!valorTotalElement) {
                 valorTotalElement = document.createElement('div');
                 valorTotalElement.id = 'valorTotalCompra';
                 valorTotalElement.className = 'valor-total-compra';
-                document.body.appendChild(valorTotalElement); // Adiciona o elemento ao corpo da página
+                document.body.appendChild(valorTotalElement); 
             }
             valorTotalElement.innerHTML = `Valor Total da Compra: R$ ${totalCompra.toFixed(2)}`;
         }
@@ -583,13 +549,14 @@
             });
             salvarDados();
             exibirMensagem('Pedido finalizado e registrado!', 'success');
-            pedidoAtual = { cliente: null, itens: [] }; // Reinicia o pedido
-            atualizarProdutosPedido(); // Limpa a lista de produtos do pedido
+            pedidoAtual = { cliente: null, itens: [] }; 
+            atualizarProdutosPedido();
 
             let valorTotalElement = document.getElementById('valorTotalCompra');
             if (valorTotalElement) {
                 valorTotalElement.innerHTML = '';
             }
+            document.getElementById('valorTotalCompra').style.display = 'none';
         }
     </script>
 </body>
