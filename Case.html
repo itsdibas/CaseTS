@@ -281,6 +281,9 @@
         }
 
         function carregarDados() {
+            clientes = JSON.parse(localStorage.getItem('clientes')) || [];
+            produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+            vendas = JSON.parse(localStorage.getItem('vendas')) || [];
             atualizarVendas();
         }
 
@@ -294,12 +297,50 @@
             }, 3000);
         }
 
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+                return false; // Verifica se o CPF é composto por números repetidos
+            }
+            let soma = 0;
+            let resto;
+            // Valida o primeiro dígito verificador
+            for (let i = 1; i <= 9; i++) {
+                soma += parseInt(cpf[i - 1]) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf[9])) {
+                return false;
+            }
+            soma = 0;
+            // Valida o segundo dígito verificador
+            for (let i = 1; i <= 10; i++) {
+                soma += parseInt(cpf[i - 1]) * (12 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf[10])) {
+                return false;
+            }
+            return true;
+        }
+
+        function removerPontuacaoCPF(cpf) {
+            return cpf.replace(/\D/g, '');
+        }
+
         function cadastrarCliente() {
-            let id = document.getElementById('clienteId').value;
+            let id = removerPontuacaoCPF(document.getElementById('clienteId').value);
             let nome = document.getElementById('clienteNome').value;
 
             if (!id || !nome) {
                 exibirMensagem('Preencha todos os campos!', 'error');
+                return;
+            }
+
+            if (!validarCPF(id)) {
+                exibirMensagem('CPF inválido!', 'error');
                 return;
             }
 
@@ -326,7 +367,7 @@
             }
 
             if (id.length !== 9 || !/^\d{9}$/.test(id)) {
-                exibirMensagem('O ID do produto deve ter exatamente 9 dígitos!', 'error');
+                exibirMensagem('O ID do produto deve ter exatamente 9 dígitos numéricos!', 'error');
                 return;
             }
 
@@ -387,7 +428,7 @@
         }
 
         function adicionarProdutoPedido() {
-            let clienteId = document.getElementById('pedidoClienteId').value;
+            let clienteId = removerPontuacaoCPF(document.getElementById('pedidoClienteId').value);
             let produtoId = document.getElementById('pedidoProdutoId').value;
             let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
 
