@@ -245,8 +245,18 @@ function atualizarProdutosPedido() {
         let totalItem = item.produto.preco * item.quantidade;
         totalCompra += totalItem;
         listaProdutosPedido.innerHTML += `
-    <li>
+<li         
+    style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    ">
+
+    <span>
         ${item.produto.nome} - Quantidade: ${item.quantidade} - Preço Unitário: R$ ${item.produto.preco} - Total: R$ ${totalItem.toFixed(2)}
+    </span>
+
+    <span style="display: flex; justify-content: flex-end;">
         <button 
             onclick="removerProdutoPedido('${item.produto.id}')"
             style="
@@ -256,7 +266,6 @@ function atualizarProdutosPedido() {
                 padding: 5px 10px;
                 cursor: pointer;
                 border-radius: 5px;
-                margin-left: 10px;
                 transition: background-color 0.3s ease;
             "
             onmouseover="this.style.backgroundColor='darkred'"
@@ -264,7 +273,9 @@ function atualizarProdutosPedido() {
         >
             Remover
         </button>
-    </li>`;
+    </span>
+</li>
+`;
     });
 
     let valorTotalElement = document.getElementById('valorTotalCompra');
