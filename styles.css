@@ -33,6 +33,7 @@ button {
     background-color: #28a745;
     color: white;
     font-size: 16px;
+    
     cursor: pointer;
     border-radius: 8px;
     transition: background-color 0.3s ease;
@@ -159,14 +160,17 @@ h3 {
 
 .menu button {
     background: linear-gradient(to right, #28a745, #218838);
+    border: none;
     border-radius: 8px;
     color: white;
     font-size: 18px;
     padding: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .menu button:hover {
-    background-color: #1e7e34;
+    background: linear-gradient(to right, #218838, #1e7e34); 
 }
 
 .message {
