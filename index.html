@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Vendas</title>
     <link rel="stylesheet" href="styles.css">
-
 </head>
 
 <body onload="carregarDados()">
@@ -34,7 +33,15 @@
 
     <div id="listaClientes" class="container hidden justificado">
         <h3>Lista de Clientes</h3>
-        <div id="clientesLista"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody id="clientesLista"></tbody>
+        </table>
         <button onclick="showPage('home')">Voltar</button>
     </div>
 
@@ -49,32 +56,44 @@
 
     <div id="listaProdutos" class="container hidden justificado">
         <h3>Lista de Produtos</h3>
-        <div id="produtosLista"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody id="produtosLista"></tbody>
+        </table>
         <button onclick="showPage('home')">Voltar</button>
     </div>
+</body>
 
-    <div id="pedido" class="container hidden">
-        <h3>Cadastrar Pedido</h3>
-        <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
-        <input type="text" id="pedidoProdutoId" placeholder="ID do Produto">
-        <input type="number" id="pedidoQuantidade" placeholder="Quantidade">
-        <button onclick="adicionarProdutoPedido()">Adicionar Produto ao Pedido</button>
-        <button onclick="finalizarPedido()">Finalizar Pedido</button>
-        <button onclick="showPage('home')">Voltar</button>
+</html>
 
-        <div id="pedidoProdutosLista" class="pedido-produtos-lista">
-            <h4>Produtos no Pedido</h4>
-            <ul id="listaProdutosPedido"></ul>
-        </div>
+<div id="pedido" class="container hidden">
+    <h3>Cadastrar Pedido</h3>
+    <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
+    <input type="text" id="pedidoProdutoId" placeholder="ID do Produto">
+    <input type="number" id="pedidoQuantidade" placeholder="Quantidade">
+    <button onclick="adicionarProdutoPedido()">Adicionar Produto ao Pedido</button>
+    <button onclick="finalizarPedido()">Finalizar Pedido</button>
+    <button onclick="showPage('home')">Voltar</button>
+
+    <div id="pedidoProdutosLista" class="pedido-produtos-lista">
+        <h4>Produtos no Pedido</h4>
+        <ul id="listaProdutosPedido"></ul>
     </div>
+</div>
 
-    <div id="vendas" class="container hidden justificado">
-        <h3>Vendas Realizadas</h3>
-        <div id="vendasLista"></div>
-        <button onclick="showPage('home')">Voltar</button>
-    </div>
+<div id="vendas" class="container hidden justificado">
+    <h3>Vendas Realizadas</h3>
+    <div id="vendasLista"></div>
+    <button onclick="showPage('home')">Voltar</button>
+</div>
 
-    <script src="main.js"></script>
+<script src="main.js"></script>
 </body>
 
 </html>

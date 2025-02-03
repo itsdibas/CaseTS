@@ -150,19 +150,25 @@ function removerPontuacaoCPF(cpf) {
  * 1. Remove a pontuação do CPF fornecido no campo de entrada 'clienteId'.
  * 2. Obtém o nome do cliente do campo de entrada 'clienteNome'.
  * 3. Verifica se ambos os campos (CPF e nome) estão preenchidos. Se não, exibe uma mensagem de erro e retorna.
- * 4. Valida o CPF. Se for inválido, exibe uma mensagem de erro e retorna.
- * 5. Verifica se o CPF já está cadastrado. Se estiver, exibe uma mensagem de erro e retorna.
- * 6. Adiciona o novo cliente à lista de clientes.
- * 7. Salva os dados atualizados no localStorage.
- * 8. Exibe uma mensagem de sucesso.
- * 9. Limpa os campos de entrada 'clienteId' e 'clienteNome'.
+ * 4. Verifica se o nome contém apenas letras e espaços. Se não, exibe uma mensagem de erro e retorna.
+ * 5. Valida o CPF. Se for inválido, exibe uma mensagem de erro e retorna.
+ * 6. Verifica se o CPF já está cadastrado. Se estiver, exibe uma mensagem de erro e retorna.
+ * 7. Adiciona o novo cliente à lista de clientes.
+ * 8. Salva os dados atualizados no localStorage.
+ * 9. Exibe uma mensagem de sucesso.
+ * 10. Limpa os campos de entrada 'clienteId' e 'clienteNome'.
  */
 function cadastrarCliente() {
     let id = removerPontuacaoCPF(document.getElementById('clienteId').value);
     let nome = document.getElementById('clienteNome').value;
 
     if (!id || !nome) {
-        exibirMensagem('Preencha todos os campos!', 'error');
+        exibirMensagem('Verifique se todos os campos foram preenchidos nos lugares corretos!', 'error');
+        return;
+    }
+
+    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(nome)) {
+        exibirMensagem('O nome do cliente deve conter apenas letras e acentos.', 'error');
         return;
     }
 
@@ -240,22 +246,24 @@ function atualizarListaClientes() {
     let clientesDiv = document.getElementById('clientesLista');
     clientesDiv.innerHTML = '';
     clientes.forEach(cliente => {
-        clientesDiv.innerHTML += `<p>CPF: ${cliente.id}, Nome: ${cliente.nome}</p>`;
+        clientesDiv.innerHTML += `<tr><td>${cliente.id}</td><td>${cliente.nome}</td></tr>`;
     });
 }
 
 
 /**
  * Atualiza a lista de produtos exibida na interface do usuário.
+ * 
+ * A função faz o seguinte:
  * 1. Seleciona o elemento com o ID 'produtosLista'.
  * 2. Limpa o conteúdo atual do elemento.
- * 3. Itera sobre a lista de produtos e adiciona um parágrafo para cada produto, exibindo o ID, nome e preço.
+ * 3. Itera sobre a lista de produtos e adiciona uma linha de tabela para cada produto, exibindo o ID, nome e preço.
  */
 function atualizarListaProdutos() {
     let produtosDiv = document.getElementById('produtosLista');
     produtosDiv.innerHTML = '';
     produtos.forEach(produto => {
-        produtosDiv.innerHTML += `<p>ID: ${produto.id}, Nome: ${produto.nome}, Preço: R$ ${produto.preco}</p>`;
+        produtosDiv.innerHTML += `<tr><td>${produto.id}</td><td>${produto.nome}</td><td>R$ ${produto.preco}</td></tr>`;
     });
 }
 
