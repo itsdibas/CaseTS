@@ -168,7 +168,7 @@ function cadastrarCliente() {
     }
 
     if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(nome)) {
-        exibirMensagem('O nome do cliente deve conter apenas letras e acentos.', 'error');
+        exibirMensagem('O nome do cliente deve conter apenas letras.', 'error');
         return;
     }
 
