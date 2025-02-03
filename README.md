@@ -1,41 +1,42 @@
-Sistema de Vendas
+# Sistema de Vendas
 
-Este sistema de vendas foi desenvolvido utilizando HTML, CSS e JavaScript, com armazenamento de dados no localStorage. Ele permite:
+Este sistema de vendas foi desenvolvido utilizando **HTML, CSS e JavaScript**, com armazenamento de dados no **localStorage**. Ele permite:
 
-Cadastro de clientes e produtos
+- Cadastro de clientes e produtos
+- Criação de pedidos
+- Exibição das vendas realizadas
 
-Criação de pedidos
+## Como Executar o Sistema
 
-Exibição das vendas realizadas
+1. **Download e Extração**  
+   Faça o download dos arquivos e extraia-os para uma pasta local.
 
-Como Executar o Sistema
+2. **Abrir o Arquivo Principal**  
+   Localize o arquivo **index.html** e abra-o em um navegador web de sua preferência (Google Chrome, Firefox, Edge, etc.).
 
-1. Faça o download dos arquivos e extraia-os para uma pasta local.
+3. **Utilização do Sistema**  
 
-2. Abrir o arquivo principal
+   - **Cadastro de Clientes**  
+     Acesse a **1ª página**. Insira o **CPF (11 dígitos)** e o **nome** no formulário. Em seguida, clique em **"Cadastrar Cliente"**.
+   
+   - **Cadastro de Produtos**  
+     Acesse a **3ª página**. Informe o **ID do produto (9 dígitos numéricos)**, o **nome do produto** e o **valor**. Em seguida, clique em **"Cadastrar Produto"**.
+   
+   - **Criação de Pedidos**  
+     Acesse a **5ª página**. Insira um **CPF cadastrado** e um **produto cadastrado**, defina a **quantidade** e clique em **"Adicionar Produto ao Pedido"**. Após adicionar os produtos desejados, clique em **"Finalizar Pedido"**. Caso necessário, é possível remover um produto do pedido clicando em **"Remover"** ao lado do item desejado.
+   
+   - **Exibição das Vendas**  
+     Acesse a **6ª página**. A lista de vendas será exibida automaticamente com base nos dados armazenados no **localStorage**.
 
-Localize o arquivo index.html e abra-o em um navegador web de sua preferência (Google Chrome, Firefox, Edge, etc.).
+## Armazenamento de Dados
 
-3. Utilização do sistema:
+Os dados de **clientes, produtos e pedidos** são armazenados no **localStorage** do navegador.
 
-Cadastro de clientes: Entre na 1º página. Insira CPF (11 digitos) e nome no formulário. Em seguida, clique em "Cadastrar Cliente".
+Para **resetar os dados**, basta limpar o cache do navegador.
 
-Cadastro de produtos: Entre na 3º página. Informe ID do produto (9 digitos numéricos), nome do produto e valor. Em seguida clique em "Cadastrar Produto".
+## Tecnologias Utilizadas
 
-Criação de pedidos: Entre na 5º página. Insira um CPF cadastrado e um produto cadastrado, defina a quantidade e clique em "Adicionar Produto ao Pedido". Após adicionar a quantidade de produtos requisitada clique em "Finalizar Pedido". Caso necessário, é possível remover um produto adicionado ao pedido, clicando em "Remover" ao lado do produto desejado.
+- **HTML**: Estrutura da aplicação
+- **CSS**: Estilização da interface
+- **JavaScript**: Lógica do sistema e manipulação de dados no localStorage
 
-Exibição das vendas: Entre na 6º página. A lista de vendas será exibida automaticamente com base no localStorage.
-
-4. Armazenamento de Dados
-
-Os dados de clientes, produtos e pedidos são armazenados no localStorage.
-
-Para resetar os dados, limpe o cache do navegador.
-
-Tecnologias Utilizadas
-
-HTML: Estrutura da aplicação
-
-CSS: Estilização da interface
-
-JavaScript: Lógica do sistema e manipulação de dados no localStorage
