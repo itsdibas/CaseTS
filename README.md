@@ -22,26 +22,29 @@ Este sistema de vendas foi desenvolvido utilizando **HTML, CSS e JavaScript**, c
 3. **Utilização do Sistema**  
 
    - **Cadastro de Clientes**  
-     Acesse a **1ª página**. Insira o **CPF (11 dígitos)** e o **nome** no formulário. Em seguida, clique em **"Cadastrar Cliente"**.
+     No menu inicial, clique no botão **Cadastrar Cliente**. Insira o **CPF (11 dígitos numéricos)** e o **nome** no formulário. Em seguida, clique em **"Cadastrar Cliente"**.
    
    - **Cadastro de Produtos**  
-     Acesse a **3ª página**. Informe o **ID do produto (9 dígitos numéricos)**, o **nome do produto** e o **valor**. Em seguida, clique em **"Cadastrar Produto"**.
+     No menu inicial, clique no botão **Cadastrar Produto**. Informe o **ID do produto (9 dígitos numéricos)**, o **nome do produto** e o **valor**. Em seguida, clique em **"Cadastrar Produto"**.
    
    - **Criação de Pedidos**  
-     Acesse a **5ª página**. Insira um **CPF cadastrado** e um **produto cadastrado**, defina a **quantidade** e clique em **"Adicionar Produto ao Pedido"**. Após adicionar os produtos desejados, clique em **"Finalizar Pedido"**. Caso necessário, é possível remover um produto do pedido clicando em **"Remover"** ao lado do item desejado.
+     No menu inicial, clique no botão **Cadastrar Pedido**. Insira um **CPF cadastrado** e um **produto cadastrado**, defina a **quantidade** e clique em **"Adicionar Produto ao Pedido"**. Após adicionar os produtos desejados, clique em **"Finalizar Pedido"**. Caso necessário, é possível remover um produto do pedido clicando em **"Remover"** ao lado do item desejado.
    
    - **Exibição das Vendas**  
-     Acesse a **6ª página**. A lista de vendas será exibida automaticamente com base nos dados armazenados no **localStorage**.
+     No menu inicial, clique no botão **Vendas Realizadas**. A lista de vendas será exibida automaticamente com base nos dados armazenados no **localStorage**.
 
    - **Lista de Clientes**  
-     Acesse a **2ª página**. A lista de clientes será exibida automaticamente com base nos dados armazenados no **localStorage**.
+     No menu inicial, clique no botão **Lista de Clientes**. A lista de clientes será exibida automaticamente com base nos dados armazenados no **localStorage**.
 
    - **Lista de Produtos**  
-     Acesse a **5ª página**. A lista de produtos será exibida automaticamente com base nos dados armazenados no **localStorage**.
+     No menu inicial, clique no botão **Lista de Produtos**. A lista de produtos será exibida automaticamente com base nos dados armazenados no **localStorage**.
+
+   - Em todas as páginas, é possível retornar ao menu inicial clicando no botão **Voltar**.
 
 ## Armazenamento de Dados
 
 Os dados de **clientes, produtos e pedidos** são armazenados no **localStorage** do navegador.
+
 
 Para **resetar os dados**, basta limpar o cache do navegador.
 
@@ -50,4 +53,4 @@ Para **resetar os dados**, basta limpar o cache do navegador.
 - **HTML**: Estrutura da aplicação
 - **CSS**: Estilização da interface
 - **JavaScript**: Lógica do sistema e manipulação de dados no localStorage
-
+- **localStorage**: O localStorage é uma funcionalidade do HTML5 que permite armazenar dados no navegador de forma persistente, sem necessidade de conexão com um servidor. Os dados armazenados permanecem disponíveis mesmo após o fechamento do navegador, até que sejam removidos manualmente ou por meio do código.
