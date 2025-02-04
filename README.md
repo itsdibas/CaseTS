@@ -54,3 +54,12 @@ Para **resetar os dados**, basta limpar o cache do navegador.
 - **CSS**: Estilização da interface
 - **JavaScript**: Lógica do sistema e manipulação de dados no localStorage
 - **localStorage**: O localStorage é uma funcionalidade do HTML5 que permite armazenar dados no navegador de forma persistente, sem necessidade de conexão com um servidor. Os dados armazenados permanecem disponíveis mesmo após o fechamento do navegador, até que sejam removidos manualmente ou por meio do código.
+
+
+## Considerações
+
+Decisões de projeto:
+
+- Foi estipulado que cada ID de produto deve ter 9 digitos numéricos. 
+- O nome do cliente não deve ter números
+
