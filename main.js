@@ -19,28 +19,38 @@ let pedidoAtual = { cliente: null, itens: [] };
  * @param {string} pageId - O ID da página a ser exibida.
  * 1. Seleciona todos os elementos com a classe 'container' e adiciona a classe 'hidden' para ocultá-los.
  * 2. Remove a classe 'hidden' do elemento com o ID especificado por `pageId` para exibi-lo.
- * 3. Chama funções específicas para atualizar o conteúdo das páginas 'listaClientes', 'listaProdutos' e 'vendas', se `pageId` corresponder a esses IDs.
+ * 3. Chama a função `atualizarConteudo` para atualizar o conteúdo da página especificada.
  * 4. Verifica se existe um elemento com o ID 'valorTotalCompra' e ajusta sua visibilidade:
- *    - Se `pageId` não for 'paginaPedidos', oculta o elemento.
  *    - Se `pageId` for 'paginaPedidos', exibe o elemento.
+ *    - Caso contrário, oculta o elemento.
  */
 function showPage(pageId) {
     document.querySelectorAll('.container').forEach(page => {
         page.classList.add('hidden');
     });
     document.getElementById(pageId).classList.remove('hidden');
-    if (pageId === 'listaClientes') atualizarListaClientes();
-    if (pageId === 'listaProdutos') atualizarListaProdutos();
-    if (pageId === 'vendas') atualizarVendas();
+    atualizarConteudo(pageId);
 
     let valorTotalElement = document.getElementById('valorTotalCompra');
     if (valorTotalElement) {
-        if (pageId !== 'paginaPedidos') {
-            valorTotalElement.style.display = 'none';
-        } else {
-            valorTotalElement.style.display = 'block';
-        }
+        valorTotalElement.style.display = (pageId === 'paginaPedidos') ? 'block' : 'none';
     }
+}
+
+/**
+ * Atualiza o conteúdo das páginas específicas com base no ID da página.
+ * 
+ * @param {string} pageId - O ID da página a ser atualizada.
+ * 1. Se `pageId` for 'listaClientes', chama a função `atualizarListaClientes` para atualizar a lista de clientes.
+ * 2. Se `pageId` for 'listaProdutos', chama a função `atualizarListaProdutos` para atualizar a lista de produtos.
+ * 3. Se `pageId` for 'vendas', chama a função `atualizarVendas` para atualizar a lista de vendas.
+ * 4. Se `pageId` for 'pedido', chama a função `preencherSelects` para garantir que os selects de clientes e produtos sejam preenchidos ao entrar na página de pedidos.
+ */
+function atualizarConteudo(pageId) {
+    if (pageId === 'listaClientes') atualizarListaClientes();
+    if (pageId === 'listaProdutos') atualizarListaProdutos();
+    if (pageId === 'vendas') atualizarVendas();
+    if (pageId === 'pedido') preencherSelects(); 
 }
 
 /**
@@ -62,14 +72,40 @@ function salvarDados() {
  * 2. Recupera a string JSON armazenada no localStorage com a chave 'produtos', converte para um objeto e atribui à variável `produtos`. Se não houver dados, atribui um array vazio.
  * 3. Recupera a string JSON armazenada no localStorage com a chave 'vendas', converte para um objeto e atribui à variável `vendas`. Se não houver dados, atribui um array vazio.
  * 4. Chama a função `atualizarVendas` para atualizar a interface com os dados carregados.
+ * 5. Chama a função `preencherSelects` para preencher os selects com os dados carregados.
  */
 function carregarDados() {
     clientes = JSON.parse(localStorage.getItem('clientes')) || [];
     produtos = JSON.parse(localStorage.getItem('produtos')) || [];
     vendas = JSON.parse(localStorage.getItem('vendas')) || [];
     atualizarVendas();
+    preencherSelects();
 }
 
+/**
+ * Preenche os selects de clientes e produtos com os dados carregados.
+ * 1. Seleciona os elementos de select para clientes e produtos.
+ * 2. Limpa o conteúdo atual dos selects.
+ * 3. Adiciona uma opção padrão "Selecione um cliente" ao select de clientes.
+ * 4. Adiciona uma opção padrão "Selecione um produto" ao select de produtos.
+ * 5. Itera sobre a lista de clientes e adiciona uma opção para cada cliente no select de clientes.
+ * 6. Itera sobre a lista de produtos e adiciona uma opção para cada produto no select de produtos.
+ */
+function preencherSelects() {
+    let clienteSelect = document.getElementById('pedidoClienteId');
+    let produtoSelect = document.getElementById('pedidoProdutoId');
+
+    clienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+    produtoSelect.innerHTML = '<option value="">Selecione um produto</option>';
+
+    clientes.forEach(cliente => {
+        clienteSelect.innerHTML += `<option value="${cliente.id}">${cliente.nome} (CPF: ${cliente.id})</option>`;
+    });
+
+    produtos.forEach(produto => {
+        produtoSelect.innerHTML += `<option value="${produto.id}">${produto.nome} (ID: ${produto.id})</option>`;
+    });
+}
 
 /**
  * Exibe uma mensagem temporária na interface do usuário.
@@ -150,9 +186,9 @@ function removerPontuacaoCPF(cpf) {
  * 1. Remove a pontuação do CPF fornecido no campo de entrada 'clienteId'.
  * 2. Obtém o nome do cliente do campo de entrada 'clienteNome'.
  * 3. Verifica se ambos os campos (CPF e nome) estão preenchidos. Se não, exibe uma mensagem de erro e retorna.
- * 4. Verifica se o nome contém apenas letras e espaços. Se não, exibe uma mensagem de erro e retorna.
- * 5. Valida o CPF. Se for inválido, exibe uma mensagem de erro e retorna.
- * 6. Verifica se o CPF já está cadastrado. Se estiver, exibe uma mensagem de erro e retorna.
+ * 4. Valida o CPF. Se for inválido, exibe uma mensagem de erro e retorna.
+ * 5. Verifica se o CPF já está cadastrado. Se estiver, exibe uma mensagem de erro e retorna.
+ * 6. Verifica se o nome contém apenas letras e espaços. Se não, exibe uma mensagem de erro e retorna.
  * 7. Adiciona o novo cliente à lista de clientes.
  * 8. Salva os dados atualizados no localStorage.
  * 9. Exibe uma mensagem de sucesso.
@@ -167,11 +203,6 @@ function cadastrarCliente() {
         return;
     }
 
-    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(nome)) {
-        exibirMensagem('O nome do cliente deve conter apenas letras.', 'error');
-        return;
-    }
-
     if (!validarCPF(id)) {
         exibirMensagem('CPF inválido!', 'error');
         return;
@@ -179,6 +210,11 @@ function cadastrarCliente() {
 
     if (clientes.some(cliente => cliente.id === id)) {
         exibirMensagem('Este CPF já está cadastrado!', 'error');
+        return;
+    }
+
+    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(nome)) {
+        exibirMensagem('O nome do cliente deve conter apenas letras.', 'error');
         return;
     }
 
@@ -240,7 +276,7 @@ function cadastrarProduto() {
  * Atualiza a lista de clientes exibida na interface do usuário.
  * 1. Seleciona o elemento com o ID 'clientesLista'.
  * 2. Limpa o conteúdo atual do elemento.
- * 3. Itera sobre a lista de clientes e adiciona um parágrafo para cada cliente, exibindo o CPF e o nome.
+ * 3. Itera sobre a lista de clientes e adiciona uma linha de tabela para cada cliente, exibindo o CPF e o nome.
  */
 function atualizarListaClientes() {
     let clientesDiv = document.getElementById('clientesLista');
@@ -309,6 +345,7 @@ function atualizarVendas() {
 
 /**
  * Adiciona um produto ao pedido atual.
+ * A função faz o seguinte:
  * 1. Obtém o ID do cliente, o ID do produto e a quantidade dos campos de entrada correspondentes.
  * 2. Verifica se todos os campos (clienteId, produtoId e quantidade) estão preenchidos. Se não, exibe uma mensagem de erro e retorna.
  * 3. Verifica se a quantidade é um número positivo. Se não, exibe uma mensagem de erro e retorna.
@@ -320,7 +357,7 @@ function atualizarVendas() {
  * 9. Atualiza a lista de produtos no pedido chamando a função `atualizarProdutosPedido`.
  */
 function adicionarProdutoPedido() {
-    let clienteId = removerPontuacaoCPF(document.getElementById('pedidoClienteId').value);
+    let clienteId = document.getElementById('pedidoClienteId').value;
     let produtoId = document.getElementById('pedidoProdutoId').value;
     let quantidade = parseInt(document.getElementById('pedidoQuantidade').value);
 
@@ -329,22 +366,14 @@ function adicionarProdutoPedido() {
         return;
     }
 
-    if (!clienteId || !produtoId || !quantidade || quantidade <= 0) {
+    if (quantidade <= 0) {
         exibirMensagem('A quantidade deve ser um número positivo!', 'error');
         return;
     }
 
     let cliente = clientes.find(c => c.id === clienteId);
-    if (!cliente) {
-        exibirMensagem('Cliente não encontrado', 'error');
-        return;
-    }
-
     let produto = produtos.find(p => p.id === produtoId);
-    if (!produto) {
-        exibirMensagem('Produto não encontrado', 'error');
-        return;
-    }
+
 
     if (pedidoAtual.cliente && pedidoAtual.cliente.id !== cliente.id) {
         let continuar = confirm(`Este pedido já contém produtos de outro cliente (${pedidoAtual.cliente.nome}). Deseja reiniciar o pedido?`);

@@ -25,8 +25,14 @@
 
     <div id="cliente" class="container hidden">
         <h3>Cadastrar Cliente</h3>
-        <input type="text" id="clienteId" placeholder="CPF do Cliente">
-        <input type="text" id="clienteNome" placeholder="Nome do Cliente">
+        <div class="form-group">
+            <label for="clienteId">CPF do Cliente</label>
+            <input type="text" id="clienteId" placeholder="00000000000">
+        </div>
+        <div class="form-group">
+            <label for="clienteNome">Nome do Cliente</label>
+            <input type="text" id="clienteNome" placeholder="João da Silva">
+        </div>
         <button onclick="cadastrarCliente()">Cadastrar Cliente</button>
         <button onclick="showPage('home')">Voltar</button>
     </div>
@@ -47,9 +53,18 @@
 
     <div id="produto" class="container hidden">
         <h3>Cadastrar Produto</h3>
-        <input type="text" id="produtoId" placeholder="ID do Produto">
-        <input type="text" id="produtoNome" placeholder="Nome do Produto">
-        <input type="number" id="produtoPreco" placeholder="Preço do Produto">
+        <div class="form-group">
+            <label for="produtoId">ID do Produto</label>
+            <input type="text" id="produtoId" placeholder="000000000">
+        </div>
+        <div class="form-group">
+            <label for="produtoNome">Nome do Produto</label>
+            <input type="text" id="produtoNome" placeholder="Smartphone">
+        </div>
+        <div class="form-group">
+            <label for="produtoPreco">Preço do Produto</label>
+            <input type="number" id="produtoPreco" placeholder="R$ 0,00">
+        </div>
         <button onclick="cadastrarProduto()">Cadastrar Produto</button>
         <button onclick="showPage('home')">Voltar</button>
     </div>
@@ -74,17 +89,23 @@
 
 <div id="pedido" class="container hidden">
     <h3>Cadastrar Pedido</h3>
-    <input type="text" id="pedidoClienteId" placeholder="CPF do Cliente">
-    <input type="text" id="pedidoProdutoId" placeholder="ID do Produto">
-    <input type="number" id="pedidoQuantidade" placeholder="Quantidade">
-    <button onclick="adicionarProdutoPedido()">Adicionar Produto ao Pedido</button>
-    <button onclick="finalizarPedido()">Finalizar Pedido</button>
-    <button onclick="showPage('home')">Voltar</button>
-
-    <div id="pedidoProdutosLista" class="pedido-produtos-lista">
-        <h4>Produtos no Pedido</h4>
-        <ul id="listaProdutosPedido"></ul>
+    <div class="form-group">
+        <label for="pedidoClienteId">Cliente</label>
+        <select id="pedidoClienteId"></select>
     </div>
+    <div class="form-group">
+        <label for="pedidoProdutoId">Produto</label>
+        <select id="pedidoProdutoId"></select>
+    </div>
+    <div class="form-group">
+        <label for="pedidoQuantidade">Quantidade</label>
+        <input type="number" id="pedidoQuantidade" placeholder="Qtd">
+    </div>
+    <button onclick="adicionarProdutoPedido()">Adicionar Produto</button>
+    <button onclick="showPage('home')">Voltar</button>
+    <button onclick="finalizarPedido()">Finalizar Pedido</button>
+    <ul id="listaProdutosPedido"></ul>
+    <div id="valorTotalCompra" class="valor-total-compra"></div>
 </div>
 
 <div id="vendas" class="container hidden justificado">
